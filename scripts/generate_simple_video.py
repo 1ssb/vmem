@@ -8,7 +8,8 @@ from pathlib import Path
 VMEM_ROOT = Path(__file__).resolve().parents[1]
 PROJECT_ROOT = VMEM_ROOT.parents[1]
 CUT3R_ROOT = VMEM_ROOT / "extern" / "CUT3R"
-for path in (PROJECT_ROOT, CUT3R_ROOT, VMEM_ROOT):
+CUT3R_SRC_ROOT = CUT3R_ROOT / "src"
+for path in (CUT3R_SRC_ROOT, CUT3R_ROOT, VMEM_ROOT):
     if str(path) not in sys.path:
         sys.path.insert(0, str(path))
 
@@ -74,7 +75,23 @@ def default_sidecar_path(output_path, suffix):
     return output_path.with_name(f"{output_path.stem}{suffix}")
 
 
+def enable_workspace_depth_pro_import():
+    # CUT3R imports modules from a top-level namespace package named `src`
+    # (`src.dust3r`). The broader workspace also has a real package named `src`
+    # for the forked Depth Pro wrapper (`src.depth_pro`). Keep the workspace root
+    # off sys.path while VMem/CUT3R runs, then switch to it only for Depth Pro.
+    for module_name in list(sys.modules):
+        if module_name == "src" or module_name.startswith("src."):
+            del sys.modules[module_name]
+
+    project_root = str(PROJECT_ROOT)
+    if project_root in sys.path:
+        sys.path.remove(project_root)
+    sys.path.insert(0, project_root)
+
+
 def make_depth_pro_model(device, torch, max_depth):
+    enable_workspace_depth_pro_import()
     try:
         from src.depth_pro.get_depth import DepthEstimator
 
