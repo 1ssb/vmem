@@ -669,6 +669,36 @@ class VMemPipeline:
             sorted_indices = torch.argsort(torch.tensor(distances))
             sorted_frames = [indices_to_frame[int(i.item())] for i in sorted_indices]
             max_frames = min(self.config.model.context_num_frames, len(candidates), len(self.latents))
+            if len(sorted_frames) == 0 or max_frames == 0:
+                available_count = min(
+                    len(self.c2ws),
+                    len(self.latents),
+                    len(self.encoder_embeddings),
+                    len(self.Ks),
+                )
+                if available_count == 0:
+                    raise RuntimeError("No context frames available for VMem generation.")
+
+                fallback_count = min(self.config.model.context_num_frames, available_count)
+                context_time_indices = torch.arange(
+                    available_count - fallback_count,
+                    available_count,
+                    dtype=torch.long,
+                )
+                context_data = prepare_context_data(context_time_indices)
+                (context_c2ws,
+                 context_latents,
+                 context_encoder_embeddings,
+                 context_Ks,
+                 context_time_indices) = context_data
+
+                return {
+                    "context_c2ws": torch.from_numpy(np.array(context_c2ws)).to(self.device, self.dtype),
+                    "context_latents": torch.stack(context_latents).to(self.device, self.dtype),
+                    "context_encoder_embeddings": torch.stack(context_encoder_embeddings).to(self.device, self.dtype),
+                    "context_Ks": torch.from_numpy(np.array(context_Ks)).to(self.device, self.dtype),
+                    "context_time_indices": context_time_indices,
+                }
             
 
             is_second_step = len(self.pil_frames) == 5
@@ -1428,5 +1458,3 @@ class VMemPipeline:
         
         return self._generate_frames_for_trajectory(c2ws_tensor[1:], Ks_tensor[1:])
     
-
- 
