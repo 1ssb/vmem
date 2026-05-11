@@ -36,6 +36,7 @@ class Navigator:
         self.current_pose = None
         self.current_K = None
         self.frames = []
+        self.frame_poses = []
         self.num_interpolation_frames = num_interpolation_frames
         self.pose_history = []  # Store history of camera poses
         
@@ -58,6 +59,7 @@ class Navigator:
         # Use the pipeline's initialize method
         initial_frame = self.pipeline.initialize(image, initial_pose, initial_K)
         self.frames = [initial_frame]
+        self.frame_poses = [initial_pose]
         
         # Save the initial pose
         self.pose_history.append({
@@ -189,6 +191,7 @@ class Navigator:
         # Update the current pose to the final pose
         self.current_pose = interpolated_poses[-1]
         self.frames.extend(new_frames)
+        self.frame_poses.extend(interpolated_poses)
         
         # Save the final pose
         self.pose_history.append({
@@ -238,6 +241,7 @@ class Navigator:
         # Update the current pose to the final pose
         self.current_pose = interpolated_poses[-1]
         self.frames.extend(new_frames)
+        self.frame_poses.extend(interpolated_poses)
         
         # Save the final pose
         self.pose_history.append({
@@ -245,6 +249,54 @@ class Navigator:
             "transform_matrix": self.current_pose.tolist() if isinstance(self.current_pose, np.ndarray) else self.current_pose
         })
         
+        return new_frames
+
+    def move_forward_with_yaw(self, degrees: float, num_steps: int = 1) -> List[Image.Image]:
+        """
+        Move the camera forward while turning left or right.
+
+        Positive angles look left, negative angles look right. The translation and
+        yaw rotation are interpolated together so this behaves like entering a
+        room while looking toward one side, rather than doing two separate moves.
+        """
+        if self.current_pose is None:
+            print("Navigator not initialized. Call initialize first.")
+            return None
+
+        angle_rad = np.radians(degrees)
+        rotation = np.array([
+            [np.cos(angle_rad), 0, np.sin(angle_rad), 0],
+            [0, 1, 0, 0],
+            [-np.sin(angle_rad), 0, np.cos(angle_rad), 0],
+            [0, 0, 0, 1]
+        ])
+
+        forward_dir = self.current_pose[:3, 2]
+        target_pose = np.eye(4)
+        target_pose[:3, :3] = rotation[:3, :3] @ self.current_pose[:3, :3]
+        target_pose[:3, 3] = self.current_pose[:3, 3] - forward_dir * self.step_size * num_steps
+
+        interpolated_poses = self._interpolate_poses(
+            self.current_pose,
+            target_pose,
+            self.num_interpolation_frames
+        )
+        interpolated_Ks = [self.current_K] * len(interpolated_poses)
+
+        new_frames = self.pipeline.generate_trajectory_frames(
+            interpolated_poses,
+            interpolated_Ks,
+            use_non_maximum_suppression=False
+        )
+
+        self.current_pose = interpolated_poses[-1]
+        self.frames.extend(new_frames)
+        self.frame_poses.extend(interpolated_poses)
+        self.pose_history.append({
+            "file_path": f"images/frame_{len(self.pose_history) + 1:03d}.png",
+            "transform_matrix": self.current_pose.tolist() if isinstance(self.current_pose, np.ndarray) else self.current_pose
+        })
+
         return new_frames
     
     def turn_left(self, degrees: float = 3) -> List[Image.Image]:
@@ -323,6 +375,7 @@ class Navigator:
         # Update the current pose to the final pose
         self.current_pose = interpolated_poses[-1]
         self.frames.extend(new_frames)
+        self.frame_poses.extend(interpolated_poses)
         
         # Save the final pose
         self.pose_history.append({
@@ -432,4 +485,3 @@ class Navigator:
         print(f"Camera poses saved to {output_path}")
     
    
-

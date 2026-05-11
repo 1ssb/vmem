@@ -56,6 +56,62 @@ We provide a demo for you to interact with `VMem`. Simply run
 python app.py
 ```
 
+## Simple Video + Point Cloud Runner
+
+For a non-interactive run that takes one RGB image, moves forward, looks left or
+right, saves the video, runs the workspace fork of Depth Pro, and exports a point
+cloud:
+
+```bash
+python scripts/generate_simple_video.py --left --input test_samples/oxford.jpg
+```
+
+or:
+
+```bash
+python scripts/generate_simple_video.py --right --input test_samples/oxford.jpg
+```
+
+By default this writes:
+
+```text
+outputs/oxford_forward_left.mp4
+outputs/oxford_forward_left_pointcloud.ply
+outputs/oxford_forward_left_depths/frame_0000.npy
+outputs/oxford_forward_left_metadata.json
+```
+
+Use `--output` to choose the video path. The point cloud, depth maps, and
+metadata are written next to that video unless you pass `--pointcloud-output` or
+`--depth-dir`.
+
+The runner uses a fixed focal length for all Depth Pro back-projection, defaulting
+to `576 px`. Override it with `--focal-px` if you want a different camera model:
+
+```bash
+python scripts/generate_simple_video.py --left --input test_samples/oxford.jpg --focal-px 700
+```
+
+The runner prefers the forked Depth Pro wrapper that already exists at the root
+of this workspace (`src/depth_pro`). It is imported directly by adding the
+workspace root to `PYTHONPATH`, so no separate Depth Pro package install is
+needed for this checkout. Make sure the Depth Pro checkpoint exists:
+
+```bash
+cd /home/group/rudra-work/projects/into_the_unknown
+python -m src.depth_pro.src.downloader
+```
+
+If you are using this `studies/vmem` folder outside the full workspace, install
+your forked Depth Pro checkout into the same environment instead:
+
+```bash
+git clone <your-depth-pro-fork-url> ml-depth-pro
+cd ml-depth-pro
+pip install -e .
+source get_pretrained_models.sh
+```
+
 
 ## :heart: Acknowledgement
 This work is built on top of [CUT3R](https://github.com/CUT3R/CUT3R), [DUSt3R](https://github.com/naver/dust3r) and [Stable Virtual Camera](https://github.com/stability-ai/stable-virtual-camera). We thank them for their great works.

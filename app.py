@@ -1,6 +1,11 @@
 from typing import List, Literal
 from pathlib import Path
 from functools import partial
+import inspect
+import os
+
+os.environ.setdefault("GRADIO_TEMP_DIR", f"/tmp/gradio-{os.getuid()}")
+
 import spaces
 import gradio as gr
 import numpy as np
@@ -12,7 +17,6 @@ from modeling.pipeline import VMemPipeline
 from diffusers.utils import export_to_video
 from navigation import Navigator
 from utils import tensor_to_pil, get_default_intrinsics, load_img_and_K, transform_img_and_K
-import os
 import shutil
 
 
@@ -26,6 +30,50 @@ NAVIGATORS = []
 NAVIGATION_FPS = 13
 WIDTH = 576
 HEIGHT = 576
+ROOM_ENTRY_YAW_DEGREES = 25
+ROOM_ENTRY_FORWARD_STEPS = 3
+
+
+def image_component(*args, show_download_button=None, show_fullscreen_button=None, **kwargs):
+    """Create a Gradio image across the pre/post Gradio 6 button APIs."""
+    image_params = inspect.signature(gr.Image.__init__).parameters
+    if "show_download_button" in image_params:
+        if show_download_button is not None:
+            kwargs["show_download_button"] = show_download_button
+        if show_fullscreen_button is not None and "show_fullscreen_button" in image_params:
+            kwargs["show_fullscreen_button"] = show_fullscreen_button
+    elif "buttons" in image_params and (
+        show_download_button is not None or show_fullscreen_button is not None
+    ):
+        buttons = []
+        if show_download_button:
+            buttons.append("download")
+        if show_fullscreen_button:
+            buttons.append("fullscreen")
+        kwargs["buttons"] = buttons
+
+    return gr.Image(*args, **kwargs)
+
+
+def video_component(*args, show_share_button=None, show_download_button=None, **kwargs):
+    """Create a Gradio video across the pre/post Gradio 6 button APIs."""
+    video_params = inspect.signature(gr.Video.__init__).parameters
+    if "show_share_button" in video_params:
+        if show_share_button is not None:
+            kwargs["show_share_button"] = show_share_button
+        if show_download_button is not None and "show_download_button" in video_params:
+            kwargs["show_download_button"] = show_download_button
+    elif "buttons" in video_params and (
+        show_share_button is not None or show_download_button is not None
+    ):
+        buttons = []
+        if show_share_button:
+            buttons.append("share")
+        if show_download_button:
+            buttons.append("download")
+        kwargs["buttons"] = buttons
+
+    return gr.Video(*args, **kwargs)
 
 
 def clear_visualization_directory():
@@ -152,6 +200,12 @@ def get_duration_navigate_video(video: torch.Tensor,
     
     return base_duration
 
+
+def get_duration_room_entry_control(video: torch.Tensor, poses: torch.Tensor, direction: str):
+    base_duration = 25
+    base_duration += min(10, len(video))
+    return base_duration
+
 @spaces.GPU(duration=get_duration_navigate_video)
 @torch.autocast("cuda")
 @torch.no_grad()
@@ -259,6 +313,77 @@ def navigate_video(
         print(f"Error in navigate_video: {e}")
         gr.Warning(f"Navigation error: {e}")
         # Return the original inputs to avoid crashes
+        current_frame = tensor_to_pil(video[-1]) if len(video) > 0 else None
+        all_frames = [(tensor_to_pil(video[i]), f"t={i}") for i in range(len(video))]
+        video_frames = [tensor_to_pil(video[i]) for i in range(len(video))]
+        video_output = export_to_video(video_frames, fps=NAVIGATION_FPS) if video_frames else None
+        return video, poses, current_frame, video_output, all_frames
+
+
+@spaces.GPU(duration=get_duration_room_entry_control)
+@torch.autocast("cuda")
+@torch.no_grad()
+def navigate_room_entry_control(
+    video: torch.Tensor,
+    poses: torch.Tensor,
+    direction: Literal["left", "right"],
+):
+    """
+    Enter the scene while looking left or right.
+
+    This is a compound camera control: it moves forward and yaws the camera in
+    one interpolated trajectory, giving a room-entry motion rather than a
+    separate turn followed by a separate forward step.
+    """
+    try:
+        initial_frame = tensor_to_pil(video[0])
+
+        if len(NAVIGATORS) == 0:
+            NAVIGATORS.append(Navigator(MODEL, step_size=0.1, num_interpolation_frames=4))
+            initial_pose = poses[0].cpu().numpy().reshape(4, 4)
+            initial_K = np.array(get_default_intrinsics()[0])
+            NAVIGATORS[0].initialize(initial_frame, initial_pose, initial_K)
+
+        navigator = NAVIGATORS[0]
+        yaw_degrees = ROOM_ENTRY_YAW_DEGREES if direction == "left" else -ROOM_ENTRY_YAW_DEGREES
+        new_frames = navigator.move_forward_with_yaw(yaw_degrees, ROOM_ENTRY_FORWARD_STEPS)
+
+        if not new_frames:
+            video_frames = [tensor_to_pil(video[i]) for i in range(len(video))]
+            return (
+                video,
+                poses,
+                tensor_to_pil(video[-1]),
+                export_to_video(video_frames, fps=NAVIGATION_FPS),
+                [(tensor_to_pil(video[i]), f"t={i}") for i in range(len(video))],
+            )
+
+        new_frame_tensors = []
+        for frame in new_frames:
+            frame_np = np.array(frame) / 255.0
+            frame_tensor = torch.from_numpy(frame_np.transpose(2, 0, 1)).float() * 2.0 - 1.0
+            new_frame_tensors.append(frame_tensor)
+
+        new_frames_tensor = torch.stack(new_frame_tensors)
+        current_pose = navigator.current_pose
+        new_poses = torch.from_numpy(current_pose).float().unsqueeze(0).repeat(len(new_frames), 1, 1)
+        new_poses = new_poses.view(len(new_frames), 4, 4)
+
+        updated_video = torch.cat([video.cpu(), new_frames_tensor], dim=0)
+        updated_poses = torch.cat([poses.cpu(), new_poses], dim=0)
+        updated_video_pil = [tensor_to_pil(updated_video[i]) for i in range(len(updated_video))]
+        all_images = [(tensor_to_pil(updated_video[i]), f"t={i}") for i in range(len(updated_video))]
+
+        return (
+            updated_video,
+            updated_poses,
+            tensor_to_pil(updated_video[-1]),
+            export_to_video(updated_video_pil, fps=NAVIGATION_FPS),
+            all_images,
+        )
+    except Exception as e:
+        print(f"Error in navigate_room_entry_control: {e}")
+        gr.Warning(f"Room-entry navigation error: {e}")
         current_frame = tensor_to_pil(video[-1]) if len(video) > 0 else None
         all_frames = [(tensor_to_pil(video[i]), f"t={i}") for i in range(len(video))]
         video_frames = [tensor_to_pil(video[i]) for i in range(len(video))]
@@ -462,7 +587,7 @@ def render_demonstrate(
                             width=256,
                             height=256,
                         )
-                        demonstrate_video = gr.Video(
+                        demonstrate_video = video_component(
                             label="Generated Video",
                             width=256,
                             height=256,
@@ -497,6 +622,55 @@ def render_demonstrate(
                            
                         """)
                     # with gr.Tab("Basic", elem_id="basic-controls-tab"):
+                    with gr.Group():
+                        gr.Markdown("_**Room entry presets:**_")
+                        with gr.Row(elem_id="room-entry-controls"):
+                            gr.Button(
+                                "↖\nEnter + Look Left",
+                                size="sm",
+                                min_width=0,
+                                variant="primary",
+                            ).click(
+                                fn=partial(
+                                    navigate_room_entry_control,
+                                    direction="left",
+                                ),
+                                inputs=[
+                                    demonstrate_current_video,
+                                    demonstrate_current_poses,
+                                ],
+                                outputs=[
+                                    demonstrate_current_video,
+                                    demonstrate_current_poses,
+                                    demonstrate_current_view,
+                                    demonstrate_video,
+                                    demonstrate_generated_gallery,
+                                ],
+                            )
+
+                            gr.Button(
+                                "↗\nEnter + Look Right",
+                                size="sm",
+                                min_width=0,
+                                variant="primary",
+                            ).click(
+                                fn=partial(
+                                    navigate_room_entry_control,
+                                    direction="right",
+                                ),
+                                inputs=[
+                                    demonstrate_current_video,
+                                    demonstrate_current_poses,
+                                ],
+                                outputs=[
+                                    demonstrate_current_video,
+                                    demonstrate_current_poses,
+                                    demonstrate_current_view,
+                                    demonstrate_video,
+                                    demonstrate_generated_gallery,
+                                ],
+                            )
+
                     with gr.Group():
                         gr.Markdown("_**Select a direction to move:**_")
                         # First row: Turn left/right
@@ -815,7 +989,16 @@ with gr.Blocks(theme=gr.themes.Base(primary_hue="blue")) as demo:
     demo_idx = gr.State(value=3)
 
     with gr.Sidebar():
-        gr.Image("assets/title_logo.png", width=60, height=60, show_label=False, show_download_button=False, container=False, interactive=False, show_fullscreen_button=False)
+        image_component(
+            "assets/title_logo.png",
+            width=60,
+            height=60,
+            show_label=False,
+            show_download_button=False,
+            container=False,
+            interactive=False,
+            show_fullscreen_button=False,
+        )
         gr.Markdown("# Consistent Interactive Video Scene Generation with Surfel-Indexed View Memory", elem_id="page-title")
         gr.Markdown(
             "### Interactive Demo for [_VMem_](http://arxiv.org/abs/2506.18903) that enables interactive consistent video scene generation."

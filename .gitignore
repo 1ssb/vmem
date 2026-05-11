@@ -1,5 +1,8 @@
 *pyc
 *pth
+__pycache__/
 .vscode
 .gradio
 visualization
+outputs/
+ml-depth-pro/
