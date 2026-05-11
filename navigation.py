@@ -151,6 +151,32 @@ class Navigator:
             interpolated_poses.append(interp_pose)
             
         return interpolated_poses
+
+    def _generate_frames_for_poses(self, poses, use_non_maximum_suppression=False):
+        """
+        Generate a long trajectory in chunks compatible with VMem's target frame
+        count. VMem is configured to generate a fixed number of target frames per
+        call, so longer interpolations must be split across multiple calls.
+        """
+        if not poses:
+            return []
+
+        target_num_frames = getattr(self.pipeline.config.model, "target_num_frames", len(poses))
+        target_num_frames = max(1, int(target_num_frames))
+
+        new_frames = []
+        for start in range(0, len(poses), target_num_frames):
+            pose_chunk = poses[start:start + target_num_frames]
+            k_chunk = [self.current_K] * len(pose_chunk)
+            before_count = len(self.pipeline.pil_frames)
+            self.pipeline.generate_trajectory_frames(
+                pose_chunk,
+                k_chunk,
+                use_non_maximum_suppression=use_non_maximum_suppression,
+            )
+            new_frames.extend(self.pipeline.pil_frames[before_count:])
+
+        return new_frames
         
     def move_backward(self, num_steps: int = 1) -> List[Image.Image]:
         """
@@ -180,13 +206,10 @@ class Navigator:
             self.num_interpolation_frames
         )
         
-        # Create list of intrinsics (same for all frames)
-        interpolated_Ks = [self.current_K] * len(interpolated_poses)
-        
-        # Generate frames for interpolated poses
-        new_frames = self.pipeline.generate_trajectory_frames(interpolated_poses, 
-                                                              interpolated_Ks,
-                                                              use_non_maximum_suppression=False)
+        new_frames = self._generate_frames_for_poses(
+            interpolated_poses,
+            use_non_maximum_suppression=False,
+        )
         
         # Update the current pose to the final pose
         self.current_pose = interpolated_poses[-1]
@@ -230,13 +253,10 @@ class Navigator:
             self.num_interpolation_frames
         )
         
-        # Create list of intrinsics (same for all frames)
-        interpolated_Ks = [self.current_K] * len(interpolated_poses)
-        
-        # Generate frames for interpolated poses
-        new_frames = self.pipeline.generate_trajectory_frames(interpolated_poses, 
-                                                              interpolated_Ks,
-                                                              use_non_maximum_suppression=False)
+        new_frames = self._generate_frames_for_poses(
+            interpolated_poses,
+            use_non_maximum_suppression=False,
+        )
         
         # Update the current pose to the final pose
         self.current_pose = interpolated_poses[-1]
@@ -281,12 +301,9 @@ class Navigator:
             target_pose,
             self.num_interpolation_frames
         )
-        interpolated_Ks = [self.current_K] * len(interpolated_poses)
-
-        new_frames = self.pipeline.generate_trajectory_frames(
+        new_frames = self._generate_frames_for_poses(
             interpolated_poses,
-            interpolated_Ks,
-            use_non_maximum_suppression=False
+            use_non_maximum_suppression=False,
         )
 
         self.current_pose = interpolated_poses[-1]
@@ -365,12 +382,7 @@ class Navigator:
             self.num_interpolation_frames
         )
         
-        # Create list of intrinsics (same for all frames)
-    
-        interpolated_Ks = [self.current_K] * len(interpolated_poses)
-        
-        # Generate frames for interpolated poses
-        new_frames = self.pipeline.generate_trajectory_frames(interpolated_poses, interpolated_Ks)
+        new_frames = self._generate_frames_for_poses(interpolated_poses)
         
         # Update the current pose to the final pose
         self.current_pose = interpolated_poses[-1]
