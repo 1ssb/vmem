@@ -1,0 +1,31 @@
+{
+  "job_id": "01_bed_left_1013",
+  "task_id": "gTV8FGcVJC9_bf2646550657406bbd4374c537c98b62_i1_0__bed__partially_in_crop__obj1013",
+  "image_id": "gTV8FGcVJC9_bf2646550657406bbd4374c537c98b62_i1_0",
+  "building_id": "gTV8FGcVJC9",
+  "robot_node": "bed",
+  "raw_label": "bed",
+  "target_room_type": "bedroom",
+  "side": "left",
+  "observation_refined": "partially_in_crop_occluded",
+  "extension_px": 274.48,
+  "object_id": 1013,
+  "input_crop": "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/01_bed_left_1013/input_crop.png",
+  "camera_json": "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/01_bed_left_1013/camera.json",
+  "task_json": "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/01_bed_left_1013/task.json",
+  "output_video": "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/01_bed_left_1013/outputs/gTV8FGcVJC9_bf2646550657406bbd4374c537c98b62_i1_0__bed__partially_in_crop__obj1013_vmem_left.mp4",
+  "command": [
+    "python",
+    "scripts/generate_simple_video.py",
+    "--left",
+    "--input",
+    "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/01_bed_left_1013/input_crop.png",
+    "--camera-json",
+    "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/01_bed_left_1013/camera.json",
+    "--image-transform-mode",
+    "pad",
+    "--restore-input-size",
+    "--output",
+    "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/01_bed_left_1013/outputs/gTV8FGcVJC9_bf2646550657406bbd4374c537c98b62_i1_0__bed__partially_in_crop__obj1013_vmem_left.mp4"
+  ]
+}

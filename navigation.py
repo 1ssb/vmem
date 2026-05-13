@@ -131,8 +131,9 @@ class Navigator:
         # Generate interpolated poses
         interpolated_poses = []
         for i in range(num_frames):
-            # Interpolation factor (0 to 1)
-            t = (i + 1) / num_frames
+            # Smoothstep eases the beginning and end of each camera move.
+            linear_t = (i + 1) / num_frames
+            t = linear_t * linear_t * (3.0 - 2.0 * linear_t)
             
             # Interpolate translation
             interp_t = (1 - t) * start_t + t * end_t

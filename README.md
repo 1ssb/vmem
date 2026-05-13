@@ -85,12 +85,63 @@ Use `--output` to choose the video path. The point cloud, depth maps, and
 metadata are written next to that video unless you pass `--pointcloud-output` or
 `--depth-dir`.
 
+The forward move and final look are smoothed separately. By default the runner
+uses `--forward-frames 5` and `--turn-frames 12`; increase `--turn-frames` for a
+slower left/right look. The old `--interpolation-frames` flag is still accepted
+as a forward-frame alias, so existing commands keep working.
+
 The runner uses a fixed focal length for all Depth Pro back-projection, defaulting
 to `576 px`. Override it with `--focal-px` if you want a different camera model:
 
 ```bash
 python scripts/generate_simple_video.py --left --input test_samples/oxford.jpg --focal-px 700
 ```
+
+For benchmark crops, pass the GT camera metadata so the square VMem input is
+only an internal representation. The crop is padded into the square model frame,
+generated frames are restored to the original crop size, and Depth Pro
+back-projection uses `K_crop` from the Matterport package:
+
+```bash
+python scripts/generate_simple_video.py \
+  --left \
+  --input benchmark_jobs/01_bed_left_1013/input_crop.png \
+  --camera-json benchmark_jobs/01_bed_left_1013/camera.json \
+  --image-transform-mode pad \
+  --restore-input-size
+```
+
+## Representative Benchmark Jobs
+
+Prepare 10 one-sample jobs, one per robot-search category, from the benchmark
+dataset-card representatives:
+
+```bash
+python scripts/prepare_benchmark_jobs.py --overwrite
+```
+
+Run them from an environment with VMem dependencies installed:
+
+```bash
+python scripts/run_representative_10.py
+```
+
+If the orchestration script is launched from a different Python than the VMem
+environment, point it at the right interpreter:
+
+```bash
+python scripts/run_representative_10.py --python /path/to/vmem/bin/python
+```
+
+Run only the left or right subset:
+
+```bash
+python scripts/run_representative_10.py --side left
+python scripts/run_representative_10.py --side right
+```
+
+The copied crop inputs, camera metadata, exact task table, and local run notes
+live in `benchmark_jobs/README.md` and `benchmark_jobs/TASKS.md`.
 
 The runner prefers the forked Depth Pro wrapper that already exists at the root
 of this workspace (`src/depth_pro`). It is imported directly by adding the

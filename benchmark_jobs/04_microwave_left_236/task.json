@@ -1,0 +1,63 @@
+{
+  "task_id": "TbHJrupSAjP_ff08d99c0c494496ac2b6cdecf87a60e_i1_3__microwave__on_image_outside_crop__obj236",
+  "image_id": "TbHJrupSAjP_ff08d99c0c494496ac2b6cdecf87a60e_i1_3",
+  "building_id": "TbHJrupSAjP",
+  "object_id": 236,
+  "mpcat40_name": "appliances",
+  "raw_label": "microwave",
+  "robot_node": "microwave",
+  "observation": "on_image_outside_crop",
+  "target_room_type": "kitchen",
+  "target_room_id": 7,
+  "camera_room_type": "unknown",
+  "camera_region_id": 8,
+  "obb_center_world": [
+    -3.0755,
+    7.4738,
+    1.43
+  ],
+  "obb_size": [
+    0.4821,
+    0.3788,
+    0.0516
+  ],
+  "object_depth_m": 2.343,
+  "lateral_m": 1.073,
+  "crop_xyxy": [
+    215,
+    27,
+    609,
+    1011
+  ],
+  "image_size": [
+    1280,
+    1024
+  ],
+  "_house_ref": "data/houses/TbHJrupSAjP.json",
+  "_transform_ref": "data/transforms/TbHJrupSAjP_ff08d99c0c494496ac2b6cdecf87a60e_i1_3.json",
+  "bbox2d": [
+    56.26208086685484,
+    226.30984123770335,
+    185.5142396667255,
+    757.0813859467495
+  ],
+  "image_visible_fraction": 1.0,
+  "seg_validation": {
+    "match_fraction": 0.0,
+    "visible": false,
+    "bbox_pixels": 69160,
+    "matching_pixels": 0,
+    "dominant_ade": [
+      [
+        0,
+        "wall",
+        69160
+      ]
+    ]
+  },
+  "observation_refined": "on_image_outside_crop_occluded",
+  "target_room_type_raw": "kitchen",
+  "extension_px": 158.74,
+  "side": "left",
+  "extension_cap_px": 512
+}

@@ -1,0 +1,74 @@
+{
+  "task_id": "gTV8FGcVJC9_bf2646550657406bbd4374c537c98b62_i1_0__bed__partially_in_crop__obj1013",
+  "image_id": "gTV8FGcVJC9_bf2646550657406bbd4374c537c98b62_i1_0",
+  "building_id": "gTV8FGcVJC9",
+  "object_id": 1013,
+  "mpcat40_name": "bed",
+  "raw_label": "bed",
+  "robot_node": "bed",
+  "observation": "partially_in_crop",
+  "target_room_type": "bedroom",
+  "target_room_id": 39,
+  "camera_room_type": "unknown",
+  "camera_region_id": 35,
+  "obb_center_world": [
+    -17.619,
+    -21.9167,
+    4.2931
+  ],
+  "obb_size": [
+    1.2785,
+    1.1798,
+    0.9734
+  ],
+  "object_depth_m": 7.496,
+  "lateral_m": 0.32,
+  "crop_xyxy": [
+    662,
+    210,
+    755,
+    888
+  ],
+  "image_size": [
+    1280,
+    1024
+  ],
+  "_house_ref": "data/houses/gTV8FGcVJC9.json",
+  "_transform_ref": "data/transforms/gTV8FGcVJC9_bf2646550657406bbd4374c537c98b62_i1_0.json",
+  "bbox2d": [
+    387.518886550382,
+    385.9831221975975,
+    880.531288323636,
+    747.263456195406
+  ],
+  "side": "left",
+  "extension_px": 274.48,
+  "crop_visible_fraction": 0.189,
+  "image_visible_fraction": 1.0,
+  "seg_validation": {
+    "match_fraction": 0.0,
+    "visible": false,
+    "bbox_pixels": 179322,
+    "matching_pixels": 0,
+    "dominant_ade": [
+      [
+        14,
+        "door",
+        81260
+      ],
+      [
+        0,
+        "wall",
+        77408
+      ],
+      [
+        22,
+        "painting",
+        6998
+      ]
+    ]
+  },
+  "observation_refined": "partially_in_crop_occluded",
+  "target_room_type_raw": "bedroom",
+  "extension_cap_px": 512
+}

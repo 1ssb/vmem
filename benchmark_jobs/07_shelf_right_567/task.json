@@ -1,0 +1,74 @@
+{
+  "task_id": "oLBMNvg9in8_7e4d964bcf1c43259ef7ef772440f215_i1_1__shelf__partially_in_crop__obj567",
+  "image_id": "oLBMNvg9in8_7e4d964bcf1c43259ef7ef772440f215_i1_1",
+  "building_id": "oLBMNvg9in8",
+  "object_id": 567,
+  "mpcat40_name": "shelving",
+  "raw_label": "bookshelf",
+  "robot_node": "shelf",
+  "observation": "partially_in_crop",
+  "target_room_type": "living_room",
+  "target_room_id": 22,
+  "camera_room_type": "unknown",
+  "camera_region_id": 21,
+  "obb_center_world": [
+    0.0763,
+    4.444,
+    4.281
+  ],
+  "obb_size": [
+    1.3113,
+    0.7739,
+    0.1143
+  ],
+  "object_depth_m": 6.845,
+  "lateral_m": 1.24,
+  "crop_xyxy": [
+    638,
+    336,
+    885,
+    918
+  ],
+  "image_size": [
+    1280,
+    1024
+  ],
+  "_house_ref": "data/houses/oLBMNvg9in8.json",
+  "_transform_ref": "data/transforms/oLBMNvg9in8_7e4d964bcf1c43259ef7ef772440f215_i1_1.json",
+  "bbox2d": [
+    694.8355159239353,
+    280.05117357135794,
+    952.6033419852976,
+    708.6439218059912
+  ],
+  "side": "right",
+  "extension_px": 67.6,
+  "crop_visible_fraction": 0.641,
+  "image_visible_fraction": 1.0,
+  "seg_validation": {
+    "match_fraction": 0.0,
+    "visible": false,
+    "bbox_pixels": 111111,
+    "matching_pixels": 0,
+    "dominant_ade": [
+      [
+        1,
+        "building",
+        54151
+      ],
+      [
+        14,
+        "door",
+        36258
+      ],
+      [
+        0,
+        "wall",
+        13036
+      ]
+    ]
+  },
+  "observation_refined": "partially_in_crop_occluded",
+  "target_room_type_raw": "lounge",
+  "extension_cap_px": 512
+}

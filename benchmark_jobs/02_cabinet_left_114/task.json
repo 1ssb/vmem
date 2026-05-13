@@ -1,0 +1,74 @@
+{
+  "task_id": "ULsKaCPVFJR_a7a114ea184645d9a2710541e9dfdf0a_i1_5__cabinet__partially_in_crop__obj114",
+  "image_id": "ULsKaCPVFJR_a7a114ea184645d9a2710541e9dfdf0a_i1_5",
+  "building_id": "ULsKaCPVFJR",
+  "object_id": 114,
+  "mpcat40_name": "cabinet",
+  "raw_label": "cabinet",
+  "robot_node": "cabinet",
+  "observation": "partially_in_crop",
+  "target_room_type": "kitchen",
+  "target_room_id": 6,
+  "camera_room_type": "unknown",
+  "camera_region_id": 15,
+  "obb_center_world": [
+    2.7139,
+    -0.6908,
+    0.4772
+  ],
+  "obb_size": [
+    0.4661,
+    0.3074,
+    0.166
+  ],
+  "object_depth_m": 4.936,
+  "lateral_m": 1.125,
+  "crop_xyxy": [
+    777,
+    399,
+    870,
+    969
+  ],
+  "image_size": [
+    1280,
+    1024
+  ],
+  "_house_ref": "data/houses/ULsKaCPVFJR.json",
+  "_transform_ref": "data/transforms/ULsKaCPVFJR_a7a114ea184645d9a2710541e9dfdf0a_i1_5.json",
+  "bbox2d": [
+    654.0269846195038,
+    630.3717801808494,
+    794.3699061165046,
+    868.1958062435716
+  ],
+  "side": "left",
+  "extension_px": 122.97,
+  "crop_visible_fraction": 0.124,
+  "image_visible_fraction": 1.0,
+  "seg_validation": {
+    "match_fraction": 0.0,
+    "visible": false,
+    "bbox_pixels": 33699,
+    "matching_pixels": 0,
+    "dominant_ade": [
+      [
+        0,
+        "wall",
+        16447
+      ],
+      [
+        14,
+        "door",
+        13541
+      ],
+      [
+        71,
+        "stove",
+        3074
+      ]
+    ]
+  },
+  "observation_refined": "partially_in_crop_occluded",
+  "target_room_type_raw": "kitchen",
+  "extension_cap_px": 512
+}

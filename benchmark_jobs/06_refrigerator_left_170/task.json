@@ -1,0 +1,73 @@
+{
+  "task_id": "gTV8FGcVJC9_1cd3d12fe013476fbb2fbcb7af9d5104_i1_5__refrigerator__on_image_outside_crop__obj170",
+  "image_id": "gTV8FGcVJC9_1cd3d12fe013476fbb2fbcb7af9d5104_i1_5",
+  "building_id": "gTV8FGcVJC9",
+  "object_id": 170,
+  "mpcat40_name": "appliances",
+  "raw_label": "refrigerator",
+  "robot_node": "refrigerator",
+  "observation": "on_image_outside_crop",
+  "target_room_type": "kitchen",
+  "target_room_id": 8,
+  "camera_room_type": "unknown",
+  "camera_region_id": 7,
+  "obb_center_world": [
+    -11.798,
+    -10.2746,
+    -0.2361
+  ],
+  "obb_size": [
+    1.1217,
+    0.9366,
+    0.1749
+  ],
+  "object_depth_m": 5.105,
+  "lateral_m": 1.713,
+  "crop_xyxy": [
+    438,
+    206,
+    517,
+    946
+  ],
+  "image_size": [
+    1280,
+    1024
+  ],
+  "_house_ref": "data/houses/gTV8FGcVJC9.json",
+  "_transform_ref": "data/transforms/gTV8FGcVJC9_1cd3d12fe013476fbb2fbcb7af9d5104_i1_5.json",
+  "bbox2d": [
+    79.70219401334509,
+    254.87129315171424,
+    414.7826543631675,
+    830.9309578977052
+  ],
+  "image_visible_fraction": 1.0,
+  "seg_validation": {
+    "match_fraction": 0.0,
+    "visible": false,
+    "bbox_pixels": 193872,
+    "matching_pixels": 0,
+    "dominant_ade": [
+      [
+        0,
+        "wall",
+        183558
+      ],
+      [
+        17,
+        "plant",
+        9113
+      ],
+      [
+        22,
+        "painting",
+        1201
+      ]
+    ]
+  },
+  "observation_refined": "on_image_outside_crop_occluded",
+  "target_room_type_raw": "kitchen",
+  "extension_px": 358.3,
+  "side": "left",
+  "extension_cap_px": 512
+}

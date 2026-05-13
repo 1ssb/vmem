@@ -1,0 +1,31 @@
+{
+  "job_id": "04_microwave_left_236",
+  "task_id": "TbHJrupSAjP_ff08d99c0c494496ac2b6cdecf87a60e_i1_3__microwave__on_image_outside_crop__obj236",
+  "image_id": "TbHJrupSAjP_ff08d99c0c494496ac2b6cdecf87a60e_i1_3",
+  "building_id": "TbHJrupSAjP",
+  "robot_node": "microwave",
+  "raw_label": "microwave",
+  "target_room_type": "kitchen",
+  "side": "left",
+  "observation_refined": "on_image_outside_crop_occluded",
+  "extension_px": 158.74,
+  "object_id": 236,
+  "input_crop": "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/04_microwave_left_236/input_crop.png",
+  "camera_json": "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/04_microwave_left_236/camera.json",
+  "task_json": "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/04_microwave_left_236/task.json",
+  "output_video": "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/04_microwave_left_236/outputs/TbHJrupSAjP_ff08d99c0c494496ac2b6cdecf87a60e_i1_3__microwave__on_image_outside_crop__obj236_vmem_left.mp4",
+  "command": [
+    "python",
+    "scripts/generate_simple_video.py",
+    "--left",
+    "--input",
+    "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/04_microwave_left_236/input_crop.png",
+    "--camera-json",
+    "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/04_microwave_left_236/camera.json",
+    "--image-transform-mode",
+    "pad",
+    "--restore-input-size",
+    "--output",
+    "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/04_microwave_left_236/outputs/TbHJrupSAjP_ff08d99c0c494496ac2b6cdecf87a60e_i1_3__microwave__on_image_outside_crop__obj236_vmem_left.mp4"
+  ]
+}

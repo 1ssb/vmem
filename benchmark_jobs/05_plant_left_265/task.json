@@ -1,0 +1,64 @@
+{
+  "task_id": "VzqfbhrpDEA_5d3b7a8d35254640b09f3825fd5630b2_i1_3__plant__partially_in_crop__obj265",
+  "image_id": "VzqfbhrpDEA_5d3b7a8d35254640b09f3825fd5630b2_i1_3",
+  "building_id": "VzqfbhrpDEA",
+  "object_id": 265,
+  "mpcat40_name": "plant",
+  "raw_label": "plant",
+  "robot_node": "plant",
+  "observation": "partially_in_crop",
+  "target_room_type": "living_room",
+  "target_room_id": 7,
+  "camera_room_type": "unknown",
+  "camera_region_id": 8,
+  "obb_center_world": [
+    -24.4061,
+    -5.5315,
+    1.4577
+  ],
+  "obb_size": [
+    1.4432,
+    0.618,
+    0.5808
+  ],
+  "object_depth_m": 10.925,
+  "lateral_m": 6.295,
+  "crop_xyxy": [
+    11,
+    10,
+    375,
+    1018
+  ],
+  "image_size": [
+    1280,
+    1024
+  ],
+  "_house_ref": "data/houses/VzqfbhrpDEA.json",
+  "_transform_ref": "data/transforms/VzqfbhrpDEA_5d3b7a8d35254640b09f3825fd5630b2_i1_3.json",
+  "bbox2d": [
+    -66.94850164918076,
+    372.65481343719927,
+    95.93745487948313,
+    676.6802784672758
+  ],
+  "side": "left",
+  "extension_px": 77.95,
+  "crop_visible_fraction": 0.521,
+  "image_visible_fraction": 0.589,
+  "seg_validation": {
+    "match_fraction": 0.0,
+    "visible": false,
+    "bbox_pixels": 29280,
+    "matching_pixels": 0,
+    "dominant_ade": [
+      [
+        10,
+        "cabinet",
+        29280
+      ]
+    ]
+  },
+  "observation_refined": "partially_in_crop_occluded",
+  "target_room_type_raw": "familyroom",
+  "extension_cap_px": 512
+}

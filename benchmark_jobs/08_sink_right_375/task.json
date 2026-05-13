@@ -1,0 +1,63 @@
+{
+  "task_id": "82sE5b5pLXE_78113ce35ab1428b84f9f0c8cda346dc_i1_2__sink__on_image_outside_crop__obj375",
+  "image_id": "82sE5b5pLXE_78113ce35ab1428b84f9f0c8cda346dc_i1_2",
+  "building_id": "82sE5b5pLXE",
+  "object_id": 375,
+  "mpcat40_name": "sink",
+  "raw_label": "sink",
+  "robot_node": "sink",
+  "observation": "on_image_outside_crop",
+  "target_room_type": "bathroom",
+  "target_room_id": 8,
+  "camera_room_type": "unknown",
+  "camera_region_id": 9,
+  "obb_center_world": [
+    -0.6954,
+    -0.6239,
+    -0.0951
+  ],
+  "obb_size": [
+    0.1948,
+    0.1786,
+    0.0979
+  ],
+  "object_depth_m": 5.957,
+  "lateral_m": 1.529,
+  "crop_xyxy": [
+    2,
+    24,
+    294,
+    1020
+  ],
+  "image_size": [
+    1280,
+    1024
+  ],
+  "_house_ref": "data/houses/82sE5b5pLXE.json",
+  "_transform_ref": "data/transforms/82sE5b5pLXE_78113ce35ab1428b84f9f0c8cda346dc_i1_2.json",
+  "bbox2d": [
+    334.1491393023237,
+    632.301307266213,
+    430.5822772601225,
+    681.4659199799797
+  ],
+  "image_visible_fraction": 1.0,
+  "seg_validation": {
+    "match_fraction": 0.0,
+    "visible": false,
+    "bbox_pixels": 4850,
+    "matching_pixels": 0,
+    "dominant_ade": [
+      [
+        0,
+        "wall",
+        4850
+      ]
+    ]
+  },
+  "observation_refined": "on_image_outside_crop_occluded",
+  "target_room_type_raw": "bathroom",
+  "extension_px": 136.58,
+  "side": "right",
+  "extension_cap_px": 512
+}

@@ -1,0 +1,31 @@
+{
+  "job_id": "06_refrigerator_left_170",
+  "task_id": "gTV8FGcVJC9_1cd3d12fe013476fbb2fbcb7af9d5104_i1_5__refrigerator__on_image_outside_crop__obj170",
+  "image_id": "gTV8FGcVJC9_1cd3d12fe013476fbb2fbcb7af9d5104_i1_5",
+  "building_id": "gTV8FGcVJC9",
+  "robot_node": "refrigerator",
+  "raw_label": "refrigerator",
+  "target_room_type": "kitchen",
+  "side": "left",
+  "observation_refined": "on_image_outside_crop_occluded",
+  "extension_px": 358.3,
+  "object_id": 170,
+  "input_crop": "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/06_refrigerator_left_170/input_crop.png",
+  "camera_json": "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/06_refrigerator_left_170/camera.json",
+  "task_json": "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/06_refrigerator_left_170/task.json",
+  "output_video": "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/06_refrigerator_left_170/outputs/gTV8FGcVJC9_1cd3d12fe013476fbb2fbcb7af9d5104_i1_5__refrigerator__on_image_outside_crop__obj170_vmem_left.mp4",
+  "command": [
+    "python",
+    "scripts/generate_simple_video.py",
+    "--left",
+    "--input",
+    "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/06_refrigerator_left_170/input_crop.png",
+    "--camera-json",
+    "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/06_refrigerator_left_170/camera.json",
+    "--image-transform-mode",
+    "pad",
+    "--restore-input-size",
+    "--output",
+    "/home/group/rudra-work/projects/into_the_unknown/studies/vmem/benchmark_jobs/06_refrigerator_left_170/outputs/gTV8FGcVJC9_1cd3d12fe013476fbb2fbcb7af9d5104_i1_5__refrigerator__on_image_outside_crop__obj170_vmem_left.mp4"
+  ]
+}
