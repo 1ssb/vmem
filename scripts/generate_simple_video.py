@@ -16,6 +16,10 @@ for path in (CUT3R_SRC_ROOT, CUT3R_ROOT, VMEM_ROOT):
     if str(path) not in sys.path:
         sys.path.insert(0, str(path))
 
+from model_cache import configure_model_cache
+
+MODEL_CACHE_ENV = configure_model_cache()
+
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -471,6 +475,7 @@ def main():
     print(f"device: {device}", flush=True)
     if torch.cuda.is_available():
         print(f"gpu: {torch.cuda.get_device_name(0)}", flush=True)
+    print(f"model cache: {MODEL_CACHE_ENV['HF_HOME']}", flush=True)
 
     with torch.no_grad():
         print("loading model...", flush=True)
@@ -552,6 +557,7 @@ def main():
         "interpolation_frames": args.interpolation_frames,
         "fps": args.fps,
         "depth_focal_px": depth_focal_px,
+        "model_cache": MODEL_CACHE_ENV,
     }
     if camera_metadata is not None:
         metadata.update(

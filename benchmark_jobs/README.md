@@ -22,6 +22,28 @@ cd /home/group/rudra-work/projects/into_the_unknown/studies/vmem
 python scripts/evaluate_representative_10_segformer.py --install-check
 ```
 
+Confirm model downloads are routed to the shared `rudra-work` disk:
+
+```bash
+python scripts/check_model_cache.py
+```
+
+This should print `HF_HOME=/home/group/rudra-work/.cache/huggingface` and
+`TORCH_HOME=/home/group/rudra-work/.cache/torch`. Prefetch the large VMem/CUT3R
+weights before a generation run if needed:
+
+```bash
+python scripts/check_model_cache.py --download-core
+```
+
+Depth Pro is not downloaded through Hugging Face. The workspace fork stores it
+under `/home/group/rudra-work/projects/into_the_unknown/src/depth_pro/checkpoints`;
+prefetch it with:
+
+```bash
+python scripts/check_model_cache.py --download-depth-pro
+```
+
 Then run VMem from the VMem environment:
 
 ```bash
@@ -74,6 +96,13 @@ Each job writes under its own `outputs/` directory:
 
 The aggregate SegFormer result is written to
 `benchmark_jobs/segformer_summary.json`.
+
+Generation and SegFormer commands print the Hugging Face cache root before
+model loading, so a single-sample run should show:
+
+```text
+model cache: /home/group/rudra-work/.cache/huggingface
+```
 
 ## Benchmark Check
 

@@ -50,6 +50,30 @@ huggingface-cli login
 
 Once authenticated, go to our model card [here](https://huggingface.co/liguang0115/vmem) and enter your information for access.
 
+On the shared cluster, the benchmark scripts force model downloads into
+`/home/group/rudra-work/.cache` before importing Hugging Face, Transformers,
+Diffusers, OpenCLIP, or Torch Hub code. This keeps checkpoints off the small
+home directory even if the shell has `XDG_CACHE_HOME` pointed somewhere else.
+Check the active locations with:
+
+```bash
+python scripts/check_model_cache.py
+```
+
+To prefetch the core VMem/CUT3R checkpoints before launching a run:
+
+```bash
+python scripts/check_model_cache.py --download-core
+```
+
+The workspace Depth Pro fork keeps its Apple checkpoint at
+`/home/group/rudra-work/projects/into_the_unknown/src/depth_pro/checkpoints/depth_pro.pt`.
+Download it explicitly with:
+
+```bash
+python scripts/check_model_cache.py --download-depth-pro
+```
+
 We provide a demo for you to interact with `VMem`. Simply run
 
 ```bash
@@ -110,6 +134,10 @@ python scripts/generate_simple_video.py \
   --image-transform-mode pad \
   --restore-input-size
 ```
+
+The command prints `model cache: /home/group/rudra-work/.cache/huggingface`
+before model loading. If you want existing cache environment variables to win
+instead, set `VMEM_FORCE_RUDRA_CACHE=0`.
 
 ## Representative Benchmark Jobs
 

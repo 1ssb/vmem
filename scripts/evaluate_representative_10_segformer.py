@@ -5,6 +5,8 @@ import sys
 import time
 from pathlib import Path
 
+from model_cache import configure_model_cache
+
 
 VMEM_ROOT = Path(__file__).resolve().parents[1]
 PROJECT_ROOT = VMEM_ROOT.parents[1]
@@ -12,6 +14,7 @@ DEFAULT_MANIFEST = VMEM_ROOT / "benchmark_jobs" / "manifest.json"
 SEGFORMER_NAME = "nvidia/segformer-b5-finetuned-ade-640-640"
 PROB_THRESH = 0.25
 AREA_THRESH = 0.005
+MODEL_CACHE_ENV = configure_model_cache()
 
 
 TARGET_ADE20K = {
@@ -255,6 +258,7 @@ def main():
             print(f"missing video: {job['job_id']} -> {job['output_video']}", flush=True)
         return 2
 
+    print(f"model cache: {MODEL_CACHE_ENV['HF_HOME']}", flush=True)
     processor, model, device, id2label, name2id = load_model(args.device)
     print(f"SegFormer: {SEGFORMER_NAME}", flush=True)
     print(f"Device: {device}", flush=True)
@@ -291,6 +295,7 @@ def main():
         "segformer_model": SEGFORMER_NAME,
         "prob_thresh": args.prob_thresh,
         "area_thresh": args.area_thresh,
+        "model_cache": MODEL_CACHE_ENV,
         "side": args.side,
         "n_jobs": len(results),
         "detected_jobs": passed,
