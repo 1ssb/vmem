@@ -143,6 +143,18 @@ python scripts/run_representative_10.py --side right
 The copied crop inputs, camera metadata, exact task table, and local run notes
 live in `benchmark_jobs/README.md` and `benchmark_jobs/TASKS.md`.
 
+Before treating the jobs as benchmarkable, verify the SegFormer checker path:
+
+```bash
+python scripts/evaluate_representative_10_segformer.py --install-check
+```
+
+After the VMem videos exist, run the target-object check:
+
+```bash
+python scripts/evaluate_representative_10_segformer.py
+```
+
 The runner prefers the forked Depth Pro wrapper that already exists at the root
 of this workspace (`src/depth_pro`). It is imported directly by adding the
 workspace root to `PYTHONPATH`, so no separate Depth Pro package install is

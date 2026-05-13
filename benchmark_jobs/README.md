@@ -14,7 +14,15 @@ job's `camera.json`.
 
 ## Run
 
-From the VMem environment:
+First verify the SegFormer benchmark checker can load and resolve the target
+classes:
+
+```bash
+cd /home/group/rudra-work/projects/into_the_unknown/studies/vmem
+python scripts/evaluate_representative_10_segformer.py --install-check
+```
+
+Then run VMem from the VMem environment:
 
 ```bash
 cd /home/group/rudra-work/projects/into_the_unknown/studies/vmem
@@ -41,6 +49,19 @@ python scripts/run_representative_10.py --list
 python scripts/run_representative_10.py --dry-run
 ```
 
+After videos exist, run the target-object SegFormer check:
+
+```bash
+python scripts/evaluate_representative_10_segformer.py
+```
+
+Evaluate only one side:
+
+```bash
+python scripts/evaluate_representative_10_segformer.py --side left
+python scripts/evaluate_representative_10_segformer.py --side right
+```
+
 ## Outputs
 
 Each job writes under its own `outputs/` directory:
@@ -49,6 +70,22 @@ Each job writes under its own `outputs/` directory:
 - `<task_id>_vmem_<side>_metadata.json`
 - `<task_id>_vmem_<side>_pointcloud.ply`
 - `<task_id>_vmem_<side>_depths/frame_*.npy`
+- `<task_id>_vmem_<side>_segformer_target_detections.json`
+
+The aggregate SegFormer result is written to
+`benchmark_jobs/segformer_summary.json`.
+
+## Benchmark Check
+
+The benchmark check uses `nvidia/segformer-b5-finetuned-ade-640-640`.
+For each VMem video, it evaluates every frame against the task's target ADE20K
+classes and marks the job as detected if at least one frame has target area
+above the configured threshold.
+
+Default thresholds:
+
+- probability: `0.25`
+- area fraction: `0.005`
 
 ## Files
 

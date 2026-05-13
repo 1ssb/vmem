@@ -64,3 +64,33 @@ Every command also uses:
 --image-transform-mode pad
 --restore-input-size
 ```
+
+## SegFormer Target Check
+
+Before running the generated videos through the benchmark, verify the segmenter
+path is available:
+
+```bash
+python scripts/evaluate_representative_10_segformer.py --install-check
+```
+
+After VMem outputs exist:
+
+```bash
+python scripts/evaluate_representative_10_segformer.py
+```
+
+The checker uses the following target class sets:
+
+| Object Search | ADE20K labels |
+|---|---|
+| bed | bed, cradle |
+| cabinet | cabinet, wardrobe, chest of drawers |
+| chair | chair, armchair, seat, bench, swivel chair |
+| microwave | microwave |
+| plant | plant, flower, palm |
+| refrigerator | refrigerator |
+| shelf | shelf, bookcase, case |
+| sink | sink |
+| table | table, desk, counter, countertop, coffee table, kitchen island |
+| tv | television receiver, monitor, screen, computer, crt screen |

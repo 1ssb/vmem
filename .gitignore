@@ -6,3 +6,4 @@ __pycache__/
 visualization
 outputs/
 ml-depth-pro/
+benchmark_jobs/segformer_summary*.json
